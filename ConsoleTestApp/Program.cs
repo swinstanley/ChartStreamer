@@ -11,15 +11,24 @@ namespace ConsoleTestApp
     {
         static void Main(string[] args)
         {
+            
             Random r = new Random();
            
             var seriesDefs = new List<ChartSeriesJob>();
             for (int i = 0; i < 4; i++)
             {
+                
+
                 string Name = "This is series " + i;
-                var lValues = new List<double>();
+                var lValues = new List<string>();
                 while (lValues.Count < 10)
-                    lValues.Add(r.Next());
+                    lValues.Add(r.Next().ToString());
+
+                seriesDefs.Add(new ChartSeriesJob()
+                {
+                    Name = Name,
+                    Values = lValues
+                });
                
             }
             var catHeadings = new List<string>();
@@ -32,8 +41,8 @@ namespace ConsoleTestApp
                 Series = seriesDefs,
                 CategoryHeadings = catHeadings};
 
-            XmlWriter w = XmlTextWriter.Create(Console.Out);
-            job.WriteChart(w);
+            
+            job.WriteChart();
 
         }
     }

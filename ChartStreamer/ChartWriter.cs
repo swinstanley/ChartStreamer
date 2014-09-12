@@ -20,10 +20,10 @@ namespace ChartStreamer
             const string chartsMl = "http://schemas.openxmlformats.org/drawingml/2006/chart";
             const string drawingMl = "http://schemas.openxmlformats.org/drawingml/2006/main";
         
-        public static void WriteChart(this ChartRenderingJob job, XmlWriter writer)
+        public static void WriteChart(this ChartRenderingJob job)
         {
             XmlDocument dChart = new XmlDocument();
-            dChart.Load(File.OpenRead(job.TemplatePath));
+            dChart.Load(job.TemplatePath);
             
 
             XmlNamespaceManager nsMan = new XmlNamespaceManager(dChart.NameTable);
@@ -36,6 +36,7 @@ namespace ChartStreamer
             }
             if (!string.IsNullOrWhiteSpace(job.Title))
             {
+                // /c:chartSpace/c:chart/c:title/c:tx/c:rich/a:p/a:r
                 dChart["c:chartSpace"]["c:chart"]["c:title"]["c:tx"]["c:rich"]["a:p"]["a:r"]["a:t"].InnerText = job.Title;
             }
             
@@ -50,11 +51,8 @@ namespace ChartStreamer
                 
                 UpdateLiteralValues(seriesTemplate["c:val"],seriesJob.Values);
                 UpdateLiteralValues(seriesTemplate["c:cat"], job.CategoryHeadings);
-
-                //TODO:
-                
             }
-            dChart.Save(writer);
+            dChart.Save(job.TemplatePath);
         }
 
         internal static void UpdateLiteralValues (XmlElement valuesElement,IEnumerable values)
