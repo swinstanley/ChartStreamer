@@ -34,16 +34,21 @@ namespace ConsoleTestApp
             var catHeadings = new List<string>();
             while (catHeadings.Count< 10)
                 catHeadings.Add("Category " + catHeadings.Count);
-
+           
             ChartRenderingJob job = new ChartRenderingJob(){
                 TemplatePath = "xl/charts/chart1.xml",
                 Title = "Hello World",
                 Series = seriesDefs,
                 CategoryHeadings = catHeadings};
 
-            
-            job.WriteChart();
+            WorkbookJob bookjob = new WorkbookJob()
+            {
+                Path = "Workbook.xlsx",
+                ChartJobs = new ChartRenderingJob[] { job }
+            };
 
+           WorkbookWriter.UpdateWorkbook(bookjob);
+             
         }
     }
 }

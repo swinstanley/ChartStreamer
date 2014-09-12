@@ -19,13 +19,24 @@ namespace ChartStreamer
                                "doughnutChart", "barChart", "bar3DChart", "ofPieChart", "surfaceChart", "surface3DChart", "bubbleChart"});
             const string chartsMl = "http://schemas.openxmlformats.org/drawingml/2006/chart";
             const string drawingMl = "http://schemas.openxmlformats.org/drawingml/2006/main";
-        
+
         public static void WriteChart(this ChartRenderingJob job)
         {
             XmlDocument dChart = new XmlDocument();
             dChart.Load(job.TemplatePath);
+            WriteChart(dChart,job);
+            dChart.Save(job.TemplatePath);
+        }
+        public static void RenderChart(ChartRenderingJob job, Stream input, Stream Output)
+        {
+            XmlDocument doc = new XmlDocument();
             
-
+            doc.Load(input);
+            WriteChart(doc,job);
+            doc.Save(Output);
+        }
+        private static void WriteChart(XmlDocument dChart,ChartRenderingJob job)
+        {
             XmlNamespaceManager nsMan = new XmlNamespaceManager(dChart.NameTable);
             foreach (XmlAttribute a in dChart.DocumentElement.Attributes)
             {
@@ -52,7 +63,6 @@ namespace ChartStreamer
                 UpdateLiteralValues(seriesTemplate["c:val"],seriesJob.Values);
                 UpdateLiteralValues(seriesTemplate["c:cat"], job.CategoryHeadings);
             }
-            dChart.Save(job.TemplatePath);
         }
 
         internal static void UpdateLiteralValues (XmlElement valuesElement,IEnumerable values)
